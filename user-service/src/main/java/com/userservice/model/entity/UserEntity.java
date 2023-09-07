@@ -1,9 +1,9 @@
-package com.auth.model.entity;
+package com.userservice.model.entity;
 
 import java.util.List;
 
-import com.auth.model.enumeration.Role;
-import com.auth.model.enumeration.UsageType;
+import com.userservice.model.enumeration.Role;
+import com.userservice.model.enumeration.UsageType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

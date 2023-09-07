@@ -1,5 +1,6 @@
 package com.auth.service.impl;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.auth.exception.UserNotFoundException;
@@ -31,8 +32,8 @@ public class AuthServiceImpl implements AuthService {
 			throw new UserNotFoundException(userAuthData.getUsername());
 		}
 		
-    	boolean passwordMatch = userAuthData.getPassword().equals(userEntity.getPassword());
-
+		boolean passwordMatch = BCrypt.checkpw(userAuthData.getPassword(), userEntity.getPassword());
+		
     	if(passwordMatch) {
     		token = jwtTokenUtils.generateToken(userEntity);
     	}

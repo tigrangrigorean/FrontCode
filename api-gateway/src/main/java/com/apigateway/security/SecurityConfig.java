@@ -47,9 +47,8 @@ public class SecurityConfig {
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange()
                 .pathMatchers("/admin").hasAuthority("ADMIN")
-                .pathMatchers("/user").hasAuthority("USER")
                 .pathMatchers("/auth").permitAll()
-                .anyExchange().authenticated()
+                .anyExchange().permitAll()
                 .and()
                 .build();
     }
