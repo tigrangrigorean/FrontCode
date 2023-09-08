@@ -8,4 +8,6 @@ import com.userservice.model.entity.UserEntity;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity,Long> {
 
+	UserEntity findUserEntityByUsername(String username);
+	
 }

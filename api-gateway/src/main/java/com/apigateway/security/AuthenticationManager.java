@@ -6,6 +6,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+
+import com.apigateway.service.GetUsername;
+
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -14,9 +17,11 @@ import java.util.stream.Collectors;
 @Component
 public class AuthenticationManager implements ReactiveAuthenticationManager {
     private final JwtTokenUtils jwtUtil;
+    private final GetUsername getUsername;
 
-    public AuthenticationManager(JwtTokenUtils jwtUtil) {
+    public AuthenticationManager(JwtTokenUtils jwtUtil,GetUsername getUsername) {
         this.jwtUtil = jwtUtil;
+        this.getUsername = getUsername;
     }
 
     @Override
@@ -34,6 +39,7 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
 
         if (username != null && jwtUtil.validateToken(authToken)) {
             Claims claims = jwtUtil.getAllClaimsFromToken(authToken);
+            getUsername.setUsername(jwtUtil.getName(authToken));
             List<String> role = claims.get("roles", List.class);
             List<SimpleGrantedAuthority> authorities = role.stream()
                     .map(SimpleGrantedAuthority::new)

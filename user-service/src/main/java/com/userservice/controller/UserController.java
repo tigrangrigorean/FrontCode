@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.userservice.model.dto.PasswordDto;
 import com.userservice.model.dto.UserDto;
+import com.userservice.model.dto.UserDtoForUpdate;
 import com.userservice.model.entity.UserEntity;
 import com.userservice.service.UserService;
 
@@ -44,8 +46,8 @@ public class UserController {
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<String> updateUser(@RequestBody UserDto userDto,@RequestParam long id) {
-		userService.update(id,userDto);
+	public ResponseEntity<String> updateUser(@RequestBody UserDtoForUpdate userDtoForUpdate,@RequestParam long id) {
+		userService.update(id,userDtoForUpdate);
 		return ResponseEntity.ok().body("User updated");
 	}
 	
@@ -53,6 +55,12 @@ public class UserController {
 	public ResponseEntity<String> deleteUser(@RequestParam long id) {
 		userService.deleteById(id);
 		return ResponseEntity.ok().body("User by id " + id + " deleted");
+	}
+	
+	@PostMapping("/changepassword")
+	public ResponseEntity<String> changePassword(@RequestBody PasswordDto passwordDto) {
+		userService.changePassword(passwordDto.getLastPassword(), passwordDto.getNewPassword(), passwordDto.getRepeatPassword());
+		return ResponseEntity.ok("Password changed successfully");
 	}
 }
 
