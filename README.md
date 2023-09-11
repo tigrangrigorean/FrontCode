@@ -2,7 +2,7 @@
 
 ## Description
 
-The FrontCode platform is a dedicated space for FrontEnd enthusiasts to exhibit their coding prowess. It offers a user-friendly interface for members to upload and showcase their unique FrontEnd projects. This project emphasizes seamless interaction and engagement within the community, allowing users to appreciate and subscribe to their favorite creators. It's a collaborative hub for like-minded individuals to connect, form teams, and elevate their creations together. The platform also serves as a personal portfolio, giving users the opportunity to display their skills and projects for others to explore and appreciate. The FrontCode platform is dedicated to fostering creativity and growth within the FrontEnd development community.:
+The FrontCode platform is a dedicated space for FrontEnd enthusiasts to exhibit their coding prowess. It offers a user-friendly interface for members to upload and showcase their unique FrontEnd projects. This project emphasizes seamless interaction and engagement within the community, allowing users to appreciate and subscribe to their favorite creators. It's a collaborative hub for like-minded individuals to connect, form teams, and elevate their creations together. The platform also serves as a personal portfolio, giving users the opportunity to display their skills and projects for others to explore and appreciate. The FrontCode platform is dedicated to fostering creativity and growth within the FrontEnd development community:
 
 - **User Service**: Responsible for user management.
 - **Auth Service**: Handles user authorization.
