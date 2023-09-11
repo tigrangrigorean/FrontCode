@@ -3,6 +3,7 @@ package com.userservice.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,16 @@ public class UserServiceImpl implements UserService{
 	
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder encoder;
-	RequestForGetAuthenticatedUsername requestUsername;
+	private final RequestForGetAuthenticatedUsername requestUsername;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 	
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository,RequestForGetAuthenticatedUsername requestUsername) {
+	public UserServiceImpl(UserRepository userRepository,RequestForGetAuthenticatedUsername requestUsername,
+			KafkaTemplate<String, String> kafkaTemplate) {
 		this.userRepository = userRepository;
 		this.requestUsername = requestUsername;
 		this.encoder = new BCryptPasswordEncoder();
+		this.kafkaTemplate = kafkaTemplate;
 	}
 
 	@Override
@@ -57,6 +61,7 @@ public class UserServiceImpl implements UserService{
 		userEntity.setRole(Role.USER);
 		userEntity.setUsageType(UsageType.NORMAL);
 		userRepository.save(userEntity);
+		kafkaTemplate.send("reg-notification",userEntity.getUsername());
 	}
 
 	@Override
