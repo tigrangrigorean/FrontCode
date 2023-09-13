@@ -13,5 +13,6 @@ public interface UserService {
 	void update(long id, UserDtoForUpdate userDtoForUpdate);
 	void deleteById(long id);
 	void changePassword(String lastPassword, String newPassword, String repeatPassword);
+	void activateAccount(String email,String number);
 	
 }

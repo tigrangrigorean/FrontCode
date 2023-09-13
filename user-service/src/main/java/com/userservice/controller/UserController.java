@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.userservice.model.dto.ActivateAccountDto;
 import com.userservice.model.dto.PasswordDto;
 import com.userservice.model.dto.UserDto;
 import com.userservice.model.dto.UserDtoForUpdate;
@@ -61,6 +62,12 @@ public class UserController {
 	public ResponseEntity<String> changePassword(@RequestBody PasswordDto passwordDto) {
 		userService.changePassword(passwordDto.getLastPassword(), passwordDto.getNewPassword(), passwordDto.getRepeatPassword());
 		return ResponseEntity.ok("Password changed successfully");
+	}
+	
+	@PostMapping("/activation")
+	public ResponseEntity<String> activateAccout(@RequestBody ActivateAccountDto activateAccountDto) {
+		userService.activateAccount(activateAccountDto.getEmail(), activateAccountDto.getCode());
+		return ResponseEntity.ok("Account activated");
 	}
 }
 

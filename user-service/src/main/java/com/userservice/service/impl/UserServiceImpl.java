@@ -14,9 +14,12 @@ import com.userservice.model.dto.UserDtoForUpdate;
 import com.userservice.model.entity.UserEntity;
 import com.userservice.model.enumeration.Role;
 import com.userservice.model.enumeration.UsageType;
+import com.userservice.model.exception.ActivationException;
+import com.userservice.model.exception.InvalidEmailException;
 import com.userservice.model.exception.InvalidPasswordException;
 import com.userservice.model.exception.UserNotFoundException;
 import com.userservice.repository.UserRepository;
+import com.userservice.service.GenerationService;
 import com.userservice.service.UserService;
 import com.userservice.service.validator.Validator;
 
@@ -27,14 +30,16 @@ public class UserServiceImpl implements UserService{
 	private final BCryptPasswordEncoder encoder;
 	private final RequestForGetAuthenticatedUsername requestUsername;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final GenerationServiceImpl generationService;
 	
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository,RequestForGetAuthenticatedUsername requestUsername,
-			KafkaTemplate<String, String> kafkaTemplate) {
+			KafkaTemplate<String, String> kafkaTemplate, GenerationServiceImpl generationService) {
 		this.userRepository = userRepository;
 		this.requestUsername = requestUsername;
 		this.encoder = new BCryptPasswordEncoder();
 		this.kafkaTemplate = kafkaTemplate;
+		this.generationService = generationService;
 	}
 
 	@Override
@@ -60,8 +65,10 @@ public class UserServiceImpl implements UserService{
 		userEntity.setPassword(encoder.encode(userDto.getPassword()));
 		userEntity.setRole(Role.USER);
 		userEntity.setUsageType(UsageType.NORMAL);
+		generationService.generate();
+		String codeAndMailForKafka = generationService.getNumber() + " " + userDto.getEmail();
+		kafkaTemplate.send("reg-notification",codeAndMailForKafka);
 		userRepository.save(userEntity);
-		kafkaTemplate.send("reg-notification",userEntity.getUsername());
 	}
 
 	@Override
@@ -107,5 +114,23 @@ public class UserServiceImpl implements UserService{
 		}
 		
 	}
+
+	@Override
+	public void activateAccount(String email,String number) {
+		UserEntity userEntity = userRepository.findUserEntityByEmail(email);
+		
+		if(userEntity == null) {
+			throw new InvalidEmailException("User by entered Email Not Found");
+		}
+		
+		if(number.equals(generationService.getNumber())) {
+			userEntity.setActivated(true);
+			userRepository.save(userEntity);
+		} else {
+			throw new ActivationException("Activation Code is wrong");
+		}
+	}
+	
+	
 
 }
